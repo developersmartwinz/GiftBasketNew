@@ -67,4 +67,31 @@ instance.addNewStore = async (formdata) => {
   return res.status;
 };
 
+instance.updateProfile = async (formdata) => {
+  console.log(formdata);
+	
+  let res = await instance.post('updateprofile',formdata);
+  if (!res) {
+    throw new Error('No response');
+  }
+  console.log(res);
+  if (res.status === 200) {
+    return res.data;
+  }
+  return res.status;
+};
+
+instance.getusers = async (userId,page,search) => {
+  
+	
+  let res = await instance.post('getusers', { userId,page,search });
+  if (!res) {
+    throw new Error('No response');
+  }
+  console.log(res);
+  if (res.status === 200) {
+    return res.data;
+  }
+  return res.status;
+};
 export default instance;

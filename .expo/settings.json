@@ -1,0 +1,10 @@
+{
+  "hostType": "lan",
+  "lanType": "ip",
+  "dev": true,
+  "minify": false,
+  "urlRandomness": "tb-kmm",
+  "https": false,
+  "scheme": null,
+  "devClient": false
+}

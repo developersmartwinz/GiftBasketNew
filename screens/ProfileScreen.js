@@ -6,19 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const Stack = createNativeStackNavigator();
 
-function ProfileScreenContent() {
-  const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
-  return (
-    <Card>
-    <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
-    <Card.Content>
-      <Title>Card title</Title>
-      <Paragraph>Card content</Paragraph>
-    </Card.Content>
-    <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />    
-  </Card>
-  );
-}
+import ProfileScreenContent from './ProfileScreenContent';
 
 const ProfileScreen = ({navigation}) => {
     return (
@@ -39,7 +27,10 @@ const ProfileScreen = ({navigation}) => {
           options={{ title: 'Profile',
           headerLeft: () => (
             <Icon.Button name="ios-arrow-back" size={25} color="#000" backgroundColor="#FFF" onPress={() => navigation.navigate('Home')}></Icon.Button>
-        )
+        ),
+        headerRight: () => (
+          <Icon.Button name="ios-pencil-sharp" size={25} color="#000" backgroundColor="#FFF" onPress={() => navigation.navigate('EditProfileScreen')}></Icon.Button>
+      )
         
         }}
         />

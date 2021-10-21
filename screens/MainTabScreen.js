@@ -11,6 +11,8 @@ import GiftRegistryScreen from './GiftRegistryScreen';
 import MessagesScreen from './MessagesScreen';
 import AddRetailStoreScreen from './AddRetailStoreScreen';
 import ConnectScreen from './ConnectScreen';
+import EditProfileScreen from './EditProfileScreen';
+import SingleUserScreen from './SingleUserScreen';
 
 const HomeStack = createNativeStackNavigator();
 const MyBasketStack = createNativeStackNavigator();
@@ -109,6 +111,17 @@ const HomeStackScreen = ({navigation}) => (
         headerMode: 'none',
         headerShown:false
         }} />
+        <HomeStack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{
+        title:'',
+        headerMode: 'none',
+        headerShown:false
+        }} />
+        <HomeStack.Screen name="SingleUserScreen" component={SingleUserScreen} options={{
+        title:'',
+        headerMode: 'none',
+        headerShown:false
+        }} />
+        
 </HomeStack.Navigator>
 );
 

@@ -1,95 +1,158 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, StatusBar,FlatList,SafeAreaView } from 'react-native';
 import { Title,Paragraph,Card,Searchbar } from 'react-native-paper';
-import { useTheme } from '@react-navigation/native';
 
-const ConnectScreen = ({navigation}) => {
 
-  const { colors } = useTheme();
 
-  const theme = useTheme();
+import{getObjectData} from '../storage';
+import api from '../api';
+import LoadingBlock from '../components/LoadingBlock';
+import SingleUserScreen from './SingleUserScreen';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-  const ProductBlock = ({title,id}) => (
-    <Card>      
-      <Card.Cover style={{height:140}} source={{ uri: 'https://giftbasket.smartwinz.net/img/connect/'+id+'.jpg' }} />
-      <Card.Content>
-        <Title>{title} {id}</Title>
+export default class ConnectScreen extends React.Component {
+ 
+  state = {
+		search: '',
+    page:1,
+		datasource:[],
+    stores:[],
+    loading:true
+	};
+
+  componentDidMount() {
+    this.doSearch(this.state.page);
+  }
+
+  doSearch = async (page) => {
+    const userdata = await getObjectData('userData');
+    
+    if(userdata != null){
+      const userId = userdata.id;
+      try{
+      let retailUsers = await api.getusers(userId,page,this.state.search);
+      if(retailUsers.status == 1){
         
-      </Card.Content>
+        this.setState({datasource:[...this.state.datasource,...retailUsers.data]});
+        this.setState({loading:false});
+
+      }
+      }catch(err){
+        //console.log(err);
+      }
       
-    </Card>
-  );
-  const DATA = [
-    {
-      id: '1',
-      title: 'User',
-    },
-    {
-      id: '2',
-      title: 'User',
-    },
-    {
-      id: '3',
-      title: 'User',
-    },
-    {
-      id: '4',
-      title: 'User',
-    },
-    {
-      id: '5',
-      title: 'User',
-    },
-    {
-      id: '6',
-      title: 'User',
-    },
-    {
-      id: '7',
-      title: 'User',
-    },
-    {
-      id: '8',
-      title: 'User',
-    },
-    {
-      id: '9',
-      title: 'User',
     }
-  ];
-  const Item = ({ title,id }) => (
-    <View style={styles.item}>
-      <ProductBlock title={title} id={id}/>
-    </View>
-  );
-  const renderItem = ({ item }) => (
-    <Item title={item.title} id={item.id} />
-  );
-    return (
+
+  }
+  doFilterSearch = async (page) => {
+    const userdata = await getObjectData('userData');
+    
+    if(userdata != null){
+      const userId = userdata.id;
+      try{
+      let retailUsers = await api.getusers(userId,page,this.state.search);
+      if(retailUsers.status == 1){
+        
+        this.setState({datasource:retailUsers.data});
+        this.setState({loading:false});
+
+      }else{
+        this.setState({datasource:retailUsers.data});
+        this.setState({loading:false});
+      }
+      }catch(err){
+        //console.log(err);
+      }
       
-      <View style={styles.main}>
-       <View style={styles.header}>
-          <Title style={styles.title}>Connect</Title>         
-       </View>
-       <View style={styles.row}>
-        <Searchbar 
-          style={styles.searchbar}
-          placeholder="Search"
-        />
-       </View>       
-       <SafeAreaView style={{flex:1}}>
-       <FlatList
-              data={DATA}
-              renderItem={renderItem}
-              numColumns={3}
-              
-            />
-        </SafeAreaView>     
+    }
+
+  }
+
+  displayProfile = () => {
+    alert("new code");
+  }
+
+  onScrollHandler = () => {
+    
+    this.setState({
+      page: this.state.page + 1
+   }, () => {
+      this.doSearch(this.state.page);
+   });
+  }
+
+  onChangeSearch = async (query) => {
+    this.setState({search:query});
+    const search = query;
+    if(search.length >= 3){
+      this.setState({page:1,loading:true});
+      this.doFilterSearch(this.state.page);
+    }else{
+      this.setState({page:1,loading:false});
+    }
+
+  }
+
+
+
+
+
+
+
+  render(){
+    const Item = ({ title,id,imageurl }) => (
+      <View style={styles.item}>
+        <ProductBlock title={title} id={id}  imageurl={imageurl}/>
       </View>
     );
-};
+    const renderItem = ({ item }) => (
+      
+      <Item title={item.name} id={item.id} imageurl={item.thumbnail} />
+    );
+    const ProductBlock = ({title,id,imageurl}) => (
+      <Card onPress={() => 
+        this.props.navigation.navigate('SingleUserScreen',{title : title})}>      
+        <Card.Cover style={{height:140}} source={{ uri: imageurl }} />
+        <Card.Content>
+          <Title>{title}</Title>
+          
+        </Card.Content>
+        
+      </Card>
+    );
 
-export default ConnectScreen;
+    return(
+      <View style={styles.main}>
+      <View style={styles.header}>
+         <Title style={styles.title}>Connect</Title>         
+      </View>
+      
+      <View style={styles.row}>
+       <Searchbar 
+         style={styles.searchbar}
+         placeholder="Search"
+         onChangeText={this.onChangeSearch}
+         value={this.state.search}
+       />
+      </View>
+      
+      {this.state.loading ? <LoadingBlock/> : 
+      <SafeAreaView style={{flex:1}}>
+      <FlatList
+             data={this.state.datasource}
+             renderItem={renderItem}
+             numColumns={3}
+             onEndReached={this.onScrollHandler}
+             onEndReachedThreshold={0.5}
+             
+           />
+       </SafeAreaView>    
+     }
+    
+     </View>
+    )
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -127,7 +190,7 @@ const styles = StyleSheet.create({
     backgroundColor:'#FFF'
   },
   item:{
-    backgroundColor:'#F00',
+    backgroundColor:'#FFF',
     margin:5,
     width:100,
     flex:1,
