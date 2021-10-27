@@ -1,0 +1,11 @@
+{
+   "expo": {
+    "name": "Gift Basket",
+    "icon": "./assets/icon.png",
+    "version": "1.0.0",
+    "slug": "giftbasket-ios",
+    "ios": {
+      "bundleIdentifier": "com.smartwinz.giftbasket",
+      "buildNumber": "1.0.0"
+    }
+}
